@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, FlatList, StyleSheet } from 'react-native'
+import { View, Text, FlatList, StyleSheet, TextInput, StatusBar } from 'react-native'
 
 import CoinItem from "./components/CoinItem";
 
@@ -21,11 +21,18 @@ const App = () => {
 
   return (
     <View style={styles.container} >
+      <StatusBar backgroundColor="#141414" />
+      <View style={styles.header} >
+        <Text style={styles.title} >CryptoMarket</Text>
+        <TextInput style={styles.searchInput} />
+      </View>
       <FlatList
+        style={styles.list}
         data={coins}
-        renderItem={({item}) => {
-          return <Text style={styles.inputGroup}>{item.name}</Text>
-        } }
+        renderItem={({ item }) => {
+          return <CoinItem coin={item} />
+        }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   )
@@ -36,10 +43,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#141414',
     alignItems: 'center',
     flex: 1,
-    //padding: 35
   },
-  inputGroup: {
-    color: 'white'
+  title: {
+    color: '#fff', // blanco
+    marginTop: 10,
+    fontSize: 20
+  },
+  list: {
+    width: '90%' // para que ocupe todo el ancho de la pantalla
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    marginBottom: 10
+  },
+  searchInput: {
+    color: '#fff',
+    borderBottomColor: '#4657CE',
+    borderBottomWidth: 1,
+    width: '40%',
+    textAlign: 'center'
   }
 })
 
