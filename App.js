@@ -6,6 +6,8 @@ import CoinItem from "./components/CoinItem";
 const App = () => {
 
   const [coins, setCoins] = useState([])
+  const [search, setSearch] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
 
   const loadData = async () => {
     const res = await fetch(
@@ -24,15 +26,33 @@ const App = () => {
       <StatusBar backgroundColor="#141414" />
       <View style={styles.header} >
         <Text style={styles.title} >CryptoMarket</Text>
-        <TextInput style={styles.searchInput} />
+        <TextInput style={styles.searchInput}
+          placeholder="Search a coin"
+          placeholderTextColor="#858585"
+          //onChangeText={text => console.log(text)}
+          onChangeText={text => setSearch(text)}
+        />
       </View>
       <FlatList
         style={styles.list}
-        data={coins}
+        data={
+          coins.filter(
+            coin =>
+              coin.name.toLowerCase().includes(search) ||
+              coin.symbol.toLowerCase().includes(search)
+        )}
         renderItem={({ item }) => {
           return <CoinItem coin={item} />
         }}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={false} // así ocultamos la barra de scroll, es un móvil, no se necesita
+        //refreshing={true} // para que funcione el onRefresh
+        refreshing={refreshing} // para que funcione el onRefresh
+        onRefresh={async () => {
+          //console.log('refreshing') // cuando se desliza la pantalla con el dedo aparece ese texto en consola
+          setRefreshing(true)
+          await loadData(); // cada vez que deslizamos el dedo traemos los datos desde la API
+          setRefreshing(false)
+        }}  
       />
     </View>
   )
